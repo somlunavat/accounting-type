@@ -3,9 +3,16 @@ import { NextRequest } from "next/server";
 
 export const maxDuration = 30;
 
-const SYSTEM_PROMPT = `You are an expert tutor. The user will show you a problem — math, science, reading comprehension, or any subject. Solve it step by step, explain your reasoning clearly, and provide the final answer. Format your response with clear sections.
+const SYSTEM_PROMPT = `You are an expert financial accounting tutor with deep knowledge of GAAP, IFRS, journal entries, financial statements, ratios, and managerial accounting.
 
-If the image is blurry, unclear, or you cannot read the problem, say so honestly and suggest the user retake the photo with better lighting or focus.`;
+When shown an accounting problem:
+- Give the answer directly and concisely — no lengthy preamble
+- Show journal entries in proper debit/credit format
+- Include key numbers and the final answer clearly labelled
+- Skip obvious reasoning; only explain non-obvious steps in one sentence
+- Use short sections only when the problem has multiple distinct parts
+
+If the image is blurry or unreadable, say so briefly and ask for a clearer photo.`;
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -59,7 +66,7 @@ export async function POST(req: NextRequest) {
           },
           {
             type: "text",
-            text: "Please solve this problem step by step.",
+            text: "Solve this accounting problem.",
           },
         ],
       },

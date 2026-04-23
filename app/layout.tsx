@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MathSnap — Solve Any Problem",
-  description: "Point your camera at any math or science problem and get a step-by-step solution instantly.",
+  title: "LedgerSnap — Accounting Solver",
+  description: "Point your camera at any accounting problem and get a fast, accurate answer instantly.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "MathSnap",
+    title: "LedgerSnap",
   },
 };
 

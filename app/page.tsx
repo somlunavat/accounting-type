@@ -233,10 +233,10 @@ export default function Home() {
         {/* Header */}
         <header className="pt-10 pb-6 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-600/20 border border-purple-500/30 mb-3">
-            <span className="text-2xl">🔭</span>
+            <span className="text-2xl">📒</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">MathSnap</h1>
-          <p className="text-sm text-purple-300/70 mt-1">Snap a problem. Get a solution.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">LedgerSnap</h1>
+          <p className="text-sm text-purple-300/70 mt-1">Snap an accounting problem. Get the answer.</p>
         </header>
 
         <div className="flex-1 flex flex-col gap-4">
@@ -274,7 +274,7 @@ export default function Home() {
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleInputChange} />
 
               <p className="text-center text-xs text-purple-400/40 mt-2">
-                Math · Science · Reading · Any subject
+                Journal Entries · Financial Statements · Ratios · GAAP · IFRS
               </p>
             </div>
           )}
@@ -315,8 +315,8 @@ export default function Home() {
           {(state === "done" || state === "solving") && solution && (
             <div className="rounded-2xl border border-purple-500/20 bg-purple-950/20 p-4">
               <div className="flex items-center gap-2 mb-3 pb-3 border-b border-purple-500/20">
-                <span className="text-base">📐</span>
-                <span className="text-sm font-semibold text-purple-300">Step-by-Step Solution</span>
+                <span className="text-base">📒</span>
+                <span className="text-sm font-semibold text-purple-300">Answer</span>
               </div>
               <div className="text-sm text-gray-200 leading-relaxed">
                 <SolutionRenderer text={solution} />
@@ -357,7 +357,7 @@ export default function Home() {
         </div>
 
         <footer className="pt-8 text-center text-xs text-purple-400/30">
-          Powered by Claude Sonnet
+          Powered by Claude Sonnet · GAAP &amp; IFRS
         </footer>
       </main>
     </>
