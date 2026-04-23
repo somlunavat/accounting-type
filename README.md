@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MathSnap — AI Problem Solver
 
-## Getting Started
+Point your phone camera at any math, science, or reading problem and get a clear, step-by-step solution powered by Claude Sonnet.
 
-First, run the development server:
+## Quick start (local dev)
 
 ```bash
+npm install
+# Add your Anthropic key to .env.local
+echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy to Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Install Vercel CLI and log in
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install -g vercel
+vercel login
+```
 
-## Learn More
+### 2. Link to a new Vercel project
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+vercel
+# Follow the prompts — create a new project, leave all settings at defaults
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Add your Anthropic API key
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+vercel env add ANTHROPIC_API_KEY
+# Paste your key when prompted, select all environments (Production, Preview, Development)
+```
 
-## Deploy on Vercel
+> Get your key at https://console.anthropic.com/
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Deploy to production
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+vercel --prod
+```
+
+Vercel prints a live URL like `https://math-solver-abc123.vercel.app`.  
+Open it on any phone — no App Store needed.
+
+---
+
+## How it works
+
+1. User taps **Take a Photo** (opens native camera on mobile) or uploads from gallery
+2. The image is base64-encoded in the browser and sent to `/api/solve`
+3. The API route calls `claude-sonnet-4-6` with the image and streams the response back
+4. The UI renders the streamed markdown + LaTeX answer in real time
+
+## Project structure
+
+```
+app/
+  page.tsx          # Mobile-optimized single-page UI
+  layout.tsx        # Loads KaTeX CSS for math rendering
+  globals.css       # Dark theme + solution prose styles
+  api/
+    solve/
+      route.ts      # Streaming API route (API key stays server-side)
+.env.local          # ANTHROPIC_API_KEY (never committed)
+vercel.json         # Sets API route maxDuration to 30s
+```
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `API key not configured` error | Add `ANTHROPIC_API_KEY` to `.env.local` or Vercel env vars |
+| Camera button opens file picker | Expected on desktop — native camera only works on mobile |
+| Blurry/unreadable image | Claude will say so — retake with better lighting |
+| Deploy times out | Verify `vercel.json` has `maxDuration: 30` |

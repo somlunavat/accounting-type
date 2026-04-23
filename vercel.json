@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/solve/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

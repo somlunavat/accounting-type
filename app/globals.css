@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0f0f1a;
+  --foreground: #f0f0ff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* KaTeX styles loaded via CDN in layout */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+/* Prose styling for solution output */
+.solution-prose h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+}
+
+.solution-prose h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #c4b5fd;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.solution-prose p {
+  margin-bottom: 0.6rem;
+  line-height: 1.65;
+}
+
+.solution-prose ul,
+.solution-prose ol {
+  padding-left: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.solution-prose li {
+  margin-bottom: 0.3rem;
+  line-height: 1.6;
+}
+
+.solution-prose strong {
+  color: #e2d9f3;
+  font-weight: 700;
+}
+
+.solution-prose code {
+  background: rgba(167, 139, 250, 0.15);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #c4b5fd;
+}
+
+.solution-prose hr {
+  border-color: rgba(167, 139, 250, 0.2);
+  margin: 1rem 0;
 }
