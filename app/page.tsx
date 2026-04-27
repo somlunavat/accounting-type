@@ -11,7 +11,7 @@ interface SavedProblem {
   answer: string;
 }
 
-const STORAGE_KEY = "ledgersnap_saved";
+const STORAGE_KEY = "jazzsnap_saved";
 
 function loadSaved(): SavedProblem[] {
   if (typeof window === "undefined") return [];
@@ -90,7 +90,7 @@ function Spinner() {
   return (
     <div className="flex flex-col items-center gap-3 py-8">
       <div className="w-12 h-12 rounded-full border-4 border-purple-500/30 border-t-purple-500 animate-spin" />
-      <p className="text-purple-300 text-sm font-medium animate-pulse">Analyzing your problem…</p>
+      <p className="text-purple-300 text-sm font-medium animate-pulse">Analyzing your question…</p>
     </div>
   );
 }
@@ -184,7 +184,7 @@ function SavedPanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-10 pb-4 border-b border-purple-500/20">
         <div>
-          <h2 className="text-lg font-bold text-white">Saved Problems</h2>
+          <h2 className="text-lg font-bold text-white">Saved Questions</h2>
           <p className="text-xs text-purple-400/60 mt-0.5">{items.length} saved</p>
         </div>
         <button
@@ -202,8 +202,8 @@ function SavedPanel({
         {items.length === 0 && (
           <div className="flex flex-col items-center justify-center flex-1 gap-3 text-center py-16">
             <span className="text-4xl">📂</span>
-            <p className="text-purple-300/60 text-sm">No saved problems yet.</p>
-            <p className="text-purple-400/40 text-xs">After solving a problem, tap Save to keep it here.</p>
+            <p className="text-purple-300/60 text-sm">No saved questions yet.</p>
+            <p className="text-purple-400/40 text-xs">After answering a question, tap Save to keep it here.</p>
           </div>
         )}
         {items.map((item) => (
@@ -362,10 +362,10 @@ export default function Home() {
         <header className="pt-10 pb-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl">📒</span>
-              <h1 className="text-xl font-bold tracking-tight text-white">LedgerSnap</h1>
+              <span className="text-xl">🎷</span>
+              <h1 className="text-xl font-bold tracking-tight text-white">JazzSnap</h1>
             </div>
-            <p className="text-xs text-purple-300/50 mt-0.5 ml-0.5">Snap an accounting problem. Get the answer.</p>
+            <p className="text-xs text-purple-300/50 mt-0.5 ml-0.5">Snap a jazz question. Get the answer.</p>
           </div>
           <button
             onClick={() => setShowSaved(true)}
@@ -394,7 +394,7 @@ export default function Home() {
                   <CameraIcon />
                 </div>
                 <span className="text-base font-semibold">Take a Photo</span>
-                <span className="text-xs text-purple-400/60">Use your camera to capture a problem</span>
+                <span className="text-xs text-purple-400/60">Use your camera to capture a question</span>
               </button>
               <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleInputChange} />
 
@@ -414,7 +414,7 @@ export default function Home() {
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleInputChange} />
 
               <p className="text-center text-xs text-purple-400/40 mt-2">
-                Journal Entries · Financial Statements · Ratios · GAAP · IFRS
+                Theory · Chord Voicings · Improvisation · History · Transcription
               </p>
             </div>
           )}
@@ -442,7 +442,7 @@ export default function Home() {
                   onClick={handleSolve}
                   className="w-full py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold text-base transition-all shadow-lg shadow-purple-900/40"
                 >
-                  ✨ Solve It
+                  🎵 Answer It
                 </button>
               )}
               {state === "solving" && <Spinner />}
@@ -453,7 +453,7 @@ export default function Home() {
           {(state === "done" || state === "solving") && solution && (
             <div className="rounded-2xl border border-purple-500/20 bg-purple-950/20 p-4">
               <div className="flex items-center gap-2 mb-3 pb-3 border-b border-purple-500/20">
-                <span className="text-base">📒</span>
+                <span className="text-base">🎷</span>
                 <span className="text-sm font-semibold text-purple-300">Answer</span>
               </div>
               <div className="text-sm text-gray-200 leading-relaxed">
@@ -481,7 +481,7 @@ export default function Home() {
                 onClick={handleReset}
                 className="flex-1 py-3.5 rounded-2xl border border-purple-500/30 bg-transparent hover:bg-purple-900/20 active:scale-95 text-purple-300 font-medium text-sm transition-all"
               >
-                + New Problem
+                + New Question
               </button>
             </div>
           )}
@@ -509,7 +509,7 @@ export default function Home() {
         </div>
 
         <footer className="pt-8 text-center text-xs text-purple-400/30">
-          Powered by Claude Sonnet · GAAP &amp; IFRS
+          Powered by Claude Sonnet · Jazz &amp; Music Theory
         </footer>
       </main>
     </>
