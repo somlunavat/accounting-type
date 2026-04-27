@@ -456,7 +456,7 @@ export default function Home() {
                 <span className="text-base">🏛️</span>
                 <span className="text-sm font-semibold text-purple-300">Answer</span>
               </div>
-              <div className="text-sm text-gray-200 leading-relaxed">
+              <div>
                 <SolutionRenderer text={solution} />
               </div>
             </div>
