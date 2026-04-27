@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "JazzSnap — Jazz Question Solver",
-  description: "Point your camera at any jazz question and get a fast, accurate answer instantly.",
+  title: "GovSnap — Gov 310L Study Tool",
+  description: "Point your camera at any Gov 310L question and get an answer from your course notes.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "JazzSnap",
+    title: "GovSnap",
   },
 };
 
