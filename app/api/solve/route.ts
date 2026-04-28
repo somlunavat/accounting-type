@@ -5,18 +5,20 @@ import path from "path";
 
 export const maxDuration = 60;
 
-const SYSTEM_PROMPT = `You are a study assistant for Gov 310L (U.S. Government) at UT Austin. You have been provided the course lecture notes and review sheets as reference documents.
+const SYSTEM_PROMPT = `You are a study assistant for Gov 310L (U.S. Government) at UT Austin.
 
 Always structure your response like this:
 1. Start with ## followed by the direct answer (1 sentence max) — this is displayed large
 2. Then a brief explanation in plain paragraphs or a short list — this is displayed small
 
 Rules:
-- Draw primarily from the provided course materials
 - The ## answer line must be a complete standalone answer, not a heading like "Answer:"
 - Keep the explanation to 2–4 sentences or a short bullet list
-- If a question falls outside the provided materials, say so in the explanation
 - If the image is blurry or unreadable, say so and ask for a clearer photo`;
+
+const SYSTEM_PROMPT_WITH_GUIDES = `${SYSTEM_PROMPT}
+- Draw primarily from the provided course materials
+- If a question falls outside the provided materials, say so in the explanation`;
 
 interface GuideDoc {
   title: string;
@@ -70,6 +72,13 @@ export async function POST(req: NextRequest) {
   const guides = loadGuides();
   const client = new Anthropic({ apiKey });
 
+  const imageBlock = {
+    type: "image" as const,
+    source: { type: "base64" as const, media_type: mediaType, data: imageBase64 },
+  };
+  const questionText = { type: "text" as const, text: "Answer this question using the provided course materials." };
+  const fallbackText = { type: "text" as const, text: "Answer this question." };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const docBlocks: any[] = guides.map((g) => ({
     type: "document",
@@ -77,42 +86,62 @@ export async function POST(req: NextRequest) {
     title: g.title,
   }));
 
-  const stream = await client.messages.stream({
-    model: "claude-sonnet-4-6",
-    max_tokens: 2048,
-    system: SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: [
-          ...docBlocks,
-          {
-            type: "image",
-            source: { type: "base64", media_type: mediaType, data: imageBase64 },
-          },
-          {
-            type: "text",
-            text: "Answer this question using the provided course materials.",
-          },
-        ],
-      },
-    ],
-  });
-
   const encoder = new TextEncoder();
+
   const readable = new ReadableStream({
     async start(controller) {
+      const send = (text: string) => controller.enqueue(encoder.encode(text));
+      let closed = false;
+      const close = () => { if (!closed) { closed = true; controller.close(); } };
+
+      // — Guides stream —
+      const guidesStream = client.messages.stream({
+        model: "claude-sonnet-4-6",
+        max_tokens: 2048,
+        system: SYSTEM_PROMPT_WITH_GUIDES,
+        messages: [{ role: "user", content: [...docBlocks, imageBlock, questionText] }],
+      });
+
+      let firstTokenSeen = false;
+
+      const timeoutId = setTimeout(async () => {
+        if (firstTokenSeen) return;
+        // No token in 3s — abort guides and fall back to general AI
+        guidesStream.abort();
+        try {
+          const fallback = client.messages.stream({
+            model: "claude-sonnet-4-6",
+            max_tokens: 2048,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: "user", content: [imageBlock, fallbackText] }],
+          });
+          for await (const chunk of fallback) {
+            if (chunk.type === "content_block_delta" && chunk.delta.type === "text_delta") {
+              send(chunk.delta.text);
+            }
+          }
+        } catch (err) {
+          send(`\n\n[Error: ${err instanceof Error ? err.message : "Stream error"}]`);
+        }
+        close();
+      }, 3000);
+
       try {
-        for await (const chunk of stream) {
+        for await (const chunk of guidesStream) {
           if (chunk.type === "content_block_delta" && chunk.delta.type === "text_delta") {
-            controller.enqueue(encoder.encode(chunk.delta.text));
+            if (!firstTokenSeen) {
+              firstTokenSeen = true;
+              clearTimeout(timeoutId);
+            }
+            send(chunk.delta.text);
           }
         }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Stream error";
-        controller.enqueue(encoder.encode(`\n\n[Error: ${msg}]`));
-      } finally {
-        controller.close();
+        if (firstTokenSeen) close();
+      } catch {
+        // Aborted by timeout — fallback is already running
+        if (firstTokenSeen) {
+          close();
+        }
       }
     },
   });
